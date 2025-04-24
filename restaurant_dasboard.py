@@ -4,11 +4,13 @@ import streamlit as st
 import datetime
 import plotly.express as px
 
+st.set_page_config(page_title="📈 Sales Dashboard", layout="wide")
+
 def load_data():
     # Load the dataset
-    uploaded_file = st.file_uploader("Upload your sales CSV file", type=None)
+    uploaded_file = st.file_uploader("Upload your sales CSV or Excel file", type=None)
     if uploaded_file is not None:
-        if uploaded_file.name.endwiths('.csv'):
+        if uploaded_file.name.endwith('.csv'):
             df = pd.read_csv(uploaded_file)
         elif uploaded_file.name.endwith('.xlsx'):
             df = pd.read_excel(uploaded_file)
@@ -16,7 +18,7 @@ def load_data():
             st.warning("Unsupported file format. Please upload a CSV or Excel file.")
             return None
         return df
-     else:
+    else:
         st.info("No file uploaded. Loading demo file...")
         demo_file = "Balaji Fast Food Sales.csv"
         df = pd.read_csv(demo_file)
@@ -63,7 +65,6 @@ def calculate_profit(df):
 data = load_data()
 if data is not None:
     data = clean_data(data) 
-    st.set_page_config(page_title="📈 Sales Dashboard", layout="wide")
     st.title("📊 Restaurant Sales Dashboard")
     st.sidebar.title("Filters")
     start_date = st.sidebar.date_input("Start Date", data['date'].min())   
@@ -72,9 +73,9 @@ if data is not None:
 
     # Display filtered data
     if filtered_data.empty:
-        st.write("🔴 Aucune donnée disponible pour la période sélectionnée.")
+        st.write("🔴 No data available for the selected period.")
     else:
-        st.write("No data available for the selected period.")
+        st.write("Data available for the selected period.")
 
     # Display metrics
     col1, col2 = st.columns(2)
