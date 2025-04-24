@@ -16,7 +16,7 @@ def load_data():
             st.warning("Unsupported file format. Please upload a CSV or Excel file.")
             return None
         return df
-    else:
+     else:
         st.info("No file uploaded. Loading demo file...")
         demo_file = "Balaji Fast Food Sales.csv"
         df = pd.read_csv(demo_file)
