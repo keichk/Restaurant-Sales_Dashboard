@@ -10,9 +10,9 @@ def load_data():
     # Load the dataset
     uploaded_file = st.file_uploader("Upload your sales CSV or Excel file", type=None)
     if uploaded_file is not None:
-        if uploaded_file.name.endwith('.csv'):
+        if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file)
-        elif uploaded_file.name.endwith('.xlsx'):
+        elif uploaded_file.name.endswith('.xlsx'):
             df = pd.read_excel(uploaded_file)
         else:
             st.warning("Unsupported file format. Please upload a CSV or Excel file.")
