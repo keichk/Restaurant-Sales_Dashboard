@@ -20,8 +20,8 @@ def load_data():
         return df
     else:"""
     #st.info("No file uploaded. Loading demo file...")
-    demo_file = "Balaji Fast Food Sales.csv"
-    df = pd.read_csv(demo_file)
+    #demo_file = "Balaji Fast Food Sales.csv"
+    df = pd.read_csv("Balaji Fast Food Sales.csv")
     return df
 
 def clean_data(df):
