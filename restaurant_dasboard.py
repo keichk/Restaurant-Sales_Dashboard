@@ -6,8 +6,21 @@ import plotly.express as px
 
 def load_data():
     # Load the dataset
-    df = pd.read_csv("Balaji Fast Food Sales.csv")
-    return df
+    uploaded_file = st.file_uploader("Upload your sales CSV file", type=None)
+    if uploaded_file is not None:
+        if uploaded_file.name.endwiths('.csv'):
+            df = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endwith('.xlsx'):
+            df = pd.read_excel(uploaded_file)
+         else:
+            st.warning("Unsupported file format. Please upload a CSV or Excel file.")
+            return None
+        return df
+    else:
+        st.info("No file uploaded. Loading demo file...")
+        demo_file = "Balaji Fast Food Sales.csv"
+        df = pd.read_csv(demo_file)
+        return df
 
 def clean_data(df):
     # Clean the dataset
@@ -48,59 +61,55 @@ def calculate_profit(df):
     return estimated_profit
 
 data = load_data()
-data = clean_data(data) 
-st.set_page_config(page_title="📈 Sales Dashboard", layout="wide")
-st.title("📊 Restaurant Sales Dashboard")
-st.sidebar.title("Filters")
-start_date = st.sidebar.date_input("Start Date", data['date'].min())   
-end_date = st.sidebar.date_input("End Date", data['date'].max())
-filtered_data = filter_data(data, start_date, end_date)
+if data is not None:
+    data = clean_data(data) 
+    st.set_page_config(page_title="📈 Sales Dashboard", layout="wide")
+    st.title("📊 Restaurant Sales Dashboard")
+    st.sidebar.title("Filters")
+    start_date = st.sidebar.date_input("Start Date", data['date'].min())   
+    end_date = st.sidebar.date_input("End Date", data['date'].max())
+    filtered_data = filter_data(data, start_date, end_date)
 
-# Display filtered data
-if filtered_data.empty:
-    st.write("🔴 Aucune donnée disponible pour la période sélectionnée.")
-else:
-    st.write("Graphiques et analyses disponibles pour la période sélectionnée.")
+    # Display filtered data
+    if filtered_data.empty:
+        st.write("🔴 Aucune donnée disponible pour la période sélectionnée.")
+    else:
+        st.write("No data available for the selected period.")
 
-# Display metrics
-col1, col2 = st.columns(2)
-with col1:
-    st.metric("💰 Total Sales ", f"€{calculate_sales(filtered_data):,.2f}")
-with col2:
-    st.metric("📈 Estimated Profit", f"€{calculate_profit(filtered_data):,.2f}")
+    # Display metrics
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("💰 Total Sales ", f"€{calculate_sales(filtered_data):,.2f}")
+    with col2:
+        st.metric("📈 Estimated Profit", f"€{calculate_profit(filtered_data):,.2f}")
 
-#st.sidebar.write("Filtered Data")
-# st.sidebar.dataframe(filtered_data)
-#st.sidebar.write(" 💰 Total Sales: ", calculate_sales(filtered_data))
-#st.sidebar.write(" Profit: ", calculate_profit(filtered_data))
+    st.subheader("📦 Sales Data Table")
+    st.dataframe(filtered_data, use_container_width=True)
 
-st.subheader("📦 Sales Data Table")
-st.dataframe(filtered_data, use_container_width=True)
+    # Charts
+    st.subheader("📊 Sales Over Time")
+    daily_sales = filtered_data.groupby('date')['total'].sum().reset_index()
+    fig1 = px.line(daily_sales, x='date', y='total', title='Total Sales per Day')
+    st.plotly_chart(fig1, use_container_width=True)
 
-# Charts
-st.subheader("📊 Sales Over Time")
-daily_sales = filtered_data.groupby('date')['total'].sum().reset_index()
-fig1 = px.line(daily_sales, x='date', y='total', title='Total Sales per Day')
-st.plotly_chart(fig1, use_container_width=True)
+    st.subheader("💳 Sales by Payment Mode")
+    payment_sales = filtered_data.groupby('payment_mode')['total'].sum().reset_index()
+    fig2 = px.pie(payment_sales, values='total', names='payment_mode', title='Sales by Payment Method')
+    st.plotly_chart(fig2, use_container_width=True)
 
-st.subheader("💳 Sales by Payment Mode")
-payment_sales = filtered_data.groupby('payment_mode')['total'].sum().reset_index()
-fig2 = px.pie(payment_sales, values='total', names='payment_mode', title='Sales by Payment Method')
-st.plotly_chart(fig2, use_container_width=True)
+    st.subheader("🍽️ Top Selling Items")
+    top_items = filtered_data.groupby('name')['quantity'].sum().reset_index()
+    top_items = top_items.sort_values(by='quantity', ascending=False).head(10)
+    fig3 = px.bar(top_items, x='name', y='quantity', title='Top Selling Items')
+    st.plotly_chart(fig3, use_container_width=True)
 
-st.subheader("🍽️ Top Selling Items")
-top_items = filtered_data.groupby('name')['quantity'].sum().reset_index()
-top_items = top_items.sort_values(by='quantity', ascending=False).head(10)
-fig3 = px.bar(top_items, x='name', y='quantity', title='Top Selling Items')
-st.plotly_chart(fig3, use_container_width=True)
-
-# Export
-st.download_button("📥 Download Filtered Data", data=filtered_data.to_csv(index=False), file_name="filtered_sales.csv")
+    # Export
+    st.download_button("📥 Download Filtered Data", data=filtered_data.to_csv(index=False), file_name="filtered_sales.csv")
 
 
 # Quick contact
 st.markdown("---")
-st.subheader("📦 Commandez dès maintenant !")
-st.success("Découvrez nos best-sellers et faites-vous livrer en un clic.")
-if st.button("Commander maintenant"):
+st.subheader("📦 Order now !")
+st.success("Discover our best-sellers and get them delivered in just one click.")
+if st.button("Order now"):
     st.write("🔗 (WhatsApp: +33 7 65 24 22 31)")
