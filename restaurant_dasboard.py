@@ -8,7 +8,7 @@ st.set_page_config(page_title="📈 Sales Dashboard", layout="wide")
 
 def load_data():
     # Load the dataset
-    df = pd.read_csv("Balaji Fast Food Sales.csv")
+   df = pd.read_csv("Balaji Fast Food Sales.csv")
    """ uploaded_file = st.file_uploader("Upload your sales CSV or Excel file", type=None)
     if uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
