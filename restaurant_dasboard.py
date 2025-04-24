@@ -12,7 +12,7 @@ def load_data():
             df = pd.read_csv(uploaded_file)
         elif uploaded_file.name.endwith('.xlsx'):
             df = pd.read_excel(uploaded_file)
-         else:
+        else:
             st.warning("Unsupported file format. Please upload a CSV or Excel file.")
             return None
         return df
