@@ -159,4 +159,4 @@ st.markdown("---")
 st.subheader("📦 Order now !")
 st.success("Discover our best-sellers and get them delivered in just one click.")
 if st.button("Order now"):
-    st.write("🔗 (WhatsApp: +33 7 65 24 22 31)")
+    st.markdown("[🔗 (WhatsApp: +33 7 65 24 22 31)](https://wa.me/33765242231)")
