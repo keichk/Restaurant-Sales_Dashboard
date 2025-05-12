@@ -26,7 +26,7 @@ This project is an interactive sales dashboard for a fast food restaurant (Balaj
 ## Usage
 Run the dashboard with:
 ```
-streamlit run your_script_name.py
+streamlit run restaurant_dasboard.py
 ```
 
 The dashboard will open in your default browser with:
